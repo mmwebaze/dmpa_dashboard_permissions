@@ -44,6 +44,39 @@ function dmpa_dashboard_permissions_form_alter(&$form, FormStateInterface $form_
                     throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
                 }
                 break;
+            case 'node_aau_quick_node_clone_form':
+                $currentUserCountries = getUserCountries($currentUser->id());
+                $submissionCountry = getSubmissionCountry($form_state);
+                $status = (Drupal::currentUser()->hasPermission('dashboard edit') && in_array($submissionCountry, $currentUserCountries));
+                if (!$status){
+                    throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+                }
+                break;
+            case 'node_demographics_submission_quick_node_clone_form':
+                $currentUserCountries = getUserCountries($currentUser->id());
+                $submissionCountry = getSubmissionCountry($form_state);
+
+                $status = (Drupal::currentUser()->hasPermission('dashboard edit') && in_array($submissionCountry, $currentUserCountries));
+                if (!$status){
+                    throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+                }
+                break;
+            case 'node_process_indicators_submission_quick_node_clone_form':
+                $currentUserCountries = getUserCountries($currentUser->id());
+                $submissionCountry = getSubmissionCountry($form_state);
+                $status = (Drupal::currentUser()->hasPermission('dashboard edit') && in_array($submissionCountry, $currentUserCountries));
+                if (!$status){
+                    throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+                }
+                break;
+            case 'node_sdp_training_data_submission_quick_node_clone_form':
+                $currentUserCountries = getUserCountries($currentUser->id());
+                $submissionCountry = getSubmissionCountry($form_state);
+                $status = (Drupal::currentUser()->hasPermission('dashboard edit') && in_array($submissionCountry, $currentUserCountries));
+                if (!$status){
+                    throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+                }
+                break;
             case 'user_form':
                 $form['field_user_country']['#disabled'] = 'disabled';
                 break;
@@ -58,17 +91,12 @@ function dmpa_dashboard_permissions_form_alter(&$form, FormStateInterface $form_
  * @return array of country ids logged in user is associated with.
  */
 function getUserCountries($userId){
-    $countries = array();
     $user = \Drupal\user\Entity\User::load($userId);
     $userCountries = $user->field_user_country->getValue();
     $countryIds = array();
     foreach ($userCountries as $userCountry){
         array_push($countryIds, $userCountry['target_id']);
     }
-    /*$terms = Term::loadMultiple($countryIds);
-    foreach ($terms as $term){
-        array_push($countries, strtolower($term->getName()));
-    }*/
 
     return $countryIds;
 }
